@@ -3,6 +3,7 @@
   "name": "version-dereapi-serice",
   "description": "DereAPI AppVersion Service",
   "version": "1.0.0",
+  "license": "(MIT OR Apache-2.0)",
   "scripts": {
     "codecov": "codecov",
     "coverage": "npm run test && npm run codecov",
@@ -29,6 +30,9 @@
     "serverless": "1.58.0",
     "serverless-offline": "5.12.0",
     "serverless-webpack": "5.3.1",
+	 "serverless-domain-manager": "^3.3.1",
+    "serverless-offline-direct-lambda": "0.0.1",
+    "serverless-offline-scheduler": "^0.4.0",
     "webpack": "4.41.2"
   },
   "jest": {
@@ -37,9 +41,6 @@
     "testURL": "http://localhost"
   },
   "dependencies": {
-    "dynamoose": "^1.11.1",
-    "serverless-domain-manager": "^3.3.1",
-    "serverless-offline-direct-lambda": "0.0.1",
-    "serverless-offline-scheduler": "^0.4.0"
+    "dynamoose": "^1.11.1"
   }
 }
