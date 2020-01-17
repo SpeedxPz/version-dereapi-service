@@ -1,0 +1,45 @@
+{
+  "private": true,
+  "name": "version-dereapi-serice",
+  "description": "DereAPI AppVersion Service",
+  "version": "1.0.0",
+  "scripts": {
+    "codecov": "codecov",
+    "coverage": "npm run test && npm run codecov",
+    "deploy": "serverless deploy -v",
+    "lint": "eslint .",
+    "start": "serverless offline start",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "aws-sdk": "2.579.0",
+    "aws-sdk-mock": "4.5.0",
+    "babel-core": "6.26.3",
+    "babel-loader": "8.0.6",
+    "babel-preset-env": "1.7.0",
+    "codecov": "3.6.1",
+    "eslint": "6.7.1",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-config-prettier": "6.7.0",
+    "eslint-plugin-import": "2.18.2",
+    "eslint-plugin-jest": "23.0.4",
+    "eslint-plugin-prettier": "3.1.1",
+    "jest": "24.9.0",
+    "prettier": "1.19.1",
+    "serverless": "1.58.0",
+    "serverless-offline": "5.12.0",
+    "serverless-webpack": "5.3.1",
+    "webpack": "4.41.2"
+  },
+  "jest": {
+    "coverageDirectory": "./coverage/",
+    "collectCoverage": true,
+    "testURL": "http://localhost"
+  },
+  "dependencies": {
+    "dynamoose": "^1.11.1",
+    "serverless-domain-manager": "^3.3.1",
+    "serverless-offline-direct-lambda": "0.0.1",
+    "serverless-offline-scheduler": "^0.4.0"
+  }
+}

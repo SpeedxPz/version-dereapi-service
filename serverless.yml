@@ -1,0 +1,77 @@
+service: dereapi-version-service
+
+plugins:
+  - serverless-webpack
+  - serverless-domain-manager
+  - serverless-offline #serverless-offline needs to be last in the list
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: 'yarn'
+  serverless-offline:
+    port: 4000
+  domains:
+    prod: apis.deresute.app
+    dev: dev.deresute.app
+  customDomain:
+    domainName: ${self:custom.domains.${self:provider.stage}}
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+provider:
+  name: aws
+  runtime: nodejs10.x
+  stage: ${opt:stage, env:AWS_STAGE, 'dev'}
+  region: ${opt:region, env:AWS_REGION, 'ap-southeast-1'}
+  environment:
+    REGION: ${self:provider.region}
+    DYNAMODB_TABLE: dereapi-version-dynamodb
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+  versionFunctions: false  
+
+functions:
+  appver:
+    handler: src/appVersion.handler
+    name: ${self:provider.stage}-${self:service}-lambda
+    memorySize: 128
+    events:
+      - http:
+          path: appver
+          method: get
+          cors: true
+  updatever:
+      handler: src/updateVersion.handler
+      name: ${self:provider.stage}-${self:service}-update-lambda
+      memorySize: 128
+      events:
+        - schedule: 
+            rate: rate(1 hour)
+            enabled: true
+
+
+resources:
+  Resources:
+    versionTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
