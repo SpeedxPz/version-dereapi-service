@@ -1,4 +1,5 @@
 import checker from './lib/envVarsChecker';
+import VersionModel from './model/Version';
 
 export const handler = async event => {
     const dynamoTable = process.env.DYNAMODB_TABLE;
