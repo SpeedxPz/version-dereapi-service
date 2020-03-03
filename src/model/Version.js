@@ -6,8 +6,14 @@ const GetVersionModel = (tableName) => {
         tableName, 
         {
             id: String, 
+            appId: String,
             platform: String, 
-            version: String
+            version: String,
+            appInfo: {
+                name: String,
+                image: String,
+                author: String,
+            }
         });
 
     return Version;

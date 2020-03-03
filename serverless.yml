@@ -28,6 +28,8 @@ provider:
   environment:
     REGION: ${self:provider.region}
     DYNAMODB_TABLE: dereapi-version-dynamodb
+    GPLAY_ID: 'jp.co.bandainamcoent.BNEI0242'
+    ASTORE_ID: '1016318735'
   iamRoleStatements:
     - Effect: Allow
       Action:
