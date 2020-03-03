@@ -14,49 +14,45 @@ export const handler = async event => {
         return createResponse(500 ,{message: `Missing required environment variables: ${vars}`});
     }
 
-    const gPlayResult = await PlayStore(gPlayID).catch( (err) => {
+    await PlayStore(gPlayID).then(async (gPlayResult) => {
+        await UpdateAppVersion(dynamoTable, {
+            id: gPlayID,
+            appId: gPlayResult.bundleId,
+            platform: 'android',
+            version: gPlayResult.version,
+            appInfo: {
+                name: gPlayResult.name,
+                image: gPlayResult.image,
+                author: gPlayResult.author,
+            }
+        }).catch((err) => {
+            //Do something when it's error
+        });
+    })
+    .catch( (err) => {
         //Do something when it's error
     })
 
-    await UpdateAppVersion(dynamoTable, {
-        id: gPlayID,
-        appId: gPlayResult.bundleId,
-        platform: 'android',
-        version: gPlayResult.version,
-        appInfo: {
-            name: gPlayResult.name,
-            image: gPlayResult.image,
-            author: gPlayResult.author,
-        }
-    }).catch((err) => {
-        //Do something when it's error
-    });
+    
 
-    const aStoreResult = await AppStore(aStoreID).catch((err) => {
+    await AppStore(aStoreID).then(async (aStoreResult) => {
+        await UpdateAppVersion(dynamoTable, {
+            id: aStoreID,
+            appId: aStoreResult.bundleId,
+            platform: 'ios',
+            version: aStoreResult.version,
+            appInfo: {
+                name: aStoreResult.name,
+                image: aStoreResult.image,
+                author: aStoreResult.author,
+            }
+        }).catch((err) => {
+            //Do something when it's error
+        });
+    })
+    .catch((err) => {
         //Do something when it's error
     })
-
-    await UpdateAppVersion(dynamoTable, {
-        id: aStoreID,
-        appId: aStoreResult.bundleId,
-        platform: 'ios',
-        version: aStoreResult.version,
-        appInfo: {
-            name: aStoreResult.name,
-            image: aStoreResult.image,
-            author: aStoreResult.author,
-        }
-    }).catch((err) => {
-        //Do something when it's error
-    });
-    
-
-    /*console.log("Running Dynamo");
-    const Versions = await UpdateAppVersion(dynamoTable);
-    console.log("Hello");*/
-
-    
-    
 
     return createResponse(200 ,{message: "It's ok so far"});
 };
