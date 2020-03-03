@@ -20,6 +20,7 @@ export const handler = async event => {
             appId: gPlayResult.bundleId,
             platform: 'android',
             version: gPlayResult.version,
+            timestamp: Math.floor(new Date() / 1000),
             appInfo: {
                 name: gPlayResult.name,
                 image: gPlayResult.image,
@@ -41,6 +42,7 @@ export const handler = async event => {
             appId: aStoreResult.bundleId,
             platform: 'ios',
             version: aStoreResult.version,
+            timestamp: Math.floor(new Date() / 1000),
             appInfo: {
                 name: aStoreResult.name,
                 image: aStoreResult.image,
@@ -62,7 +64,7 @@ const UpdateAppVersion = (dynamoTable, payload) => {
     return new Promise((resolve, reject) => {
         const Version = VersionModel(dynamoTable);
 
-        Version.update({id: payload.id}, {appId: payload.appId, platform: payload.platform, version: payload.version, appInfo: payload.appInfo}, function (err) {
+        Version.update({id: payload.id}, {appId: payload.appId, platform: payload.platform, version: payload.version, appInfo: payload.appInfo, updateTime: payload.timestamp}, function (err) {
             if (err) {
               return reject(err);
             }

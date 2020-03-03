@@ -9,6 +9,7 @@ const GetVersionModel = (tableName) => {
             appId: String,
             platform: String, 
             version: String,
+            updateTime: Number,
             appInfo: {
                 name: String,
                 image: String,
