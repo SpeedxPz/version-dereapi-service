@@ -30,7 +30,7 @@ const Query = async (appId) => {
         resolve({
             name: appResult.trackName,
             bundleId: appResult.bundleId,
-            image: jsonResult.artworkUrl512,
+            image: appResult.artworkUrl512,
             author: appResult.artistName,
             version: appResult.version
         });
