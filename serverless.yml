@@ -28,6 +28,7 @@ provider:
   environment:
     REGION: ${self:provider.region}
     DYNAMODB_TABLE: dereapi-version-dynamodb
+    HOOK_TABLE: dereapi-hook-dynamodb
     GPLAY_ID: 'jp.co.bandainamcoent.BNEI0242'
     ASTORE_ID: '1016318735'
   iamRoleStatements:
@@ -41,6 +42,16 @@ provider:
         - dynamodb:DescribeTable
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DescribeTable
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.HOOK_TABLE}"
   versionFunctions: false  
 
 functions:
@@ -69,6 +80,19 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.DYNAMODB_TABLE}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+    hookTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.HOOK_TABLE}
         AttributeDefinitions:
           - AttributeName: id
             AttributeType: S

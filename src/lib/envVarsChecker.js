@@ -1,5 +1,5 @@
 export default env => {
-  const required = ['REGION','DYNAMODB_TABLE', 'GPLAY_ID', 'ASTORE_ID'];
+  const required = ['REGION','DYNAMODB_TABLE', 'GPLAY_ID', 'ASTORE_ID', 'HOOK_TABLE'];
   const missing = [];
 
   required.forEach(reqVar => {
