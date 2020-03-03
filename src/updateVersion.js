@@ -3,6 +3,9 @@ import VersionModel from './model/Version';
 import PlayStore from './updater/playStore';
 import AppStore from './updater/appStore';
 
+
+
+
 export const handler = async event => {
     const dynamoTable = process.env.DYNAMODB_TABLE;
     const gPlayID = process.env.GPLAY_ID;
@@ -14,7 +17,15 @@ export const handler = async event => {
         return createResponse(500 ,{message: `Missing required environment variables: ${vars}`});
     }
 
+    const Versions = await GetAppVersions(dynamoTable);
+
     await PlayStore(gPlayID).then(async (gPlayResult) => {
+
+        const searchResult = Versions.filter(item => item.platform == "android" && item.version == gPlayResult.version);
+        if(searchResult.length == 0){
+            console.log("Run hook!");
+        }
+
         await UpdateAppVersion(dynamoTable, {
             id: gPlayID,
             appId: gPlayResult.bundleId,
@@ -37,6 +48,12 @@ export const handler = async event => {
     
 
     await AppStore(aStoreID).then(async (aStoreResult) => {
+
+        const searchResult = Versions.filter(item => item.platform == "ios" && item.version == aStoreResult.version);
+        if(searchResult.length == 0){
+            console.log("Run hook!");
+        }
+
         await UpdateAppVersion(dynamoTable, {
             id: aStoreID,
             appId: aStoreResult.bundleId,
@@ -79,3 +96,13 @@ const createResponse = async (code, body) => {
         body: JSON.stringify(body),
     };
 };
+
+const GetAppVersions = (dynamoTable) => {
+    return new Promise((resolve, reject) => {
+        const Version = VersionModel(dynamoTable);
+        Version.scan().exec((err, data) => {
+            if(err) return reject(err);
+            resolve(data);
+        });
+    });
+}
