@@ -15,7 +15,10 @@ const GetModel = (tableName) => {
         {
             id: String, 
             function: String,
-            url: String,
+            service: String,
+            discord: {
+                url: String,
+            }
         });
     
     return model;

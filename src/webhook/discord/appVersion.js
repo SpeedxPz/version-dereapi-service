@@ -15,40 +15,38 @@ const formattedDateTime = (timestamp) => {
     return formattedTime;
 }
 
-const SendHook = async(url, payload) => {
+const SendHook = (url, payload) => {
     return new Promise(async (resolve,reject) => {
         var options = {
             uri: url,
             method: 'POST',
             json: payload,
-          };
-
+        };
 
         let {statusCode, body} = await request(options).catch((err) => {
+            console.log(err);
             return reject(err);
         });
-
         console.log("Status Code : " + statusCode);
-
-        resolve();
-
+        resolve(statusCode);
     });
 }
 
-const DiscordHook = async(hookList, payload) => {
+const DiscordHook = (hookList, payload) => {
     return new Promise(async (resolve, reject) => {
         if(payload.length <= 0){
             return resolve();
         }
 
-        
         const discordEmbed = PrepareEmbeded(payload);
 
-        hookList.forEach(async (hook) => {
-            console.log("Send to hook -> " + hook.url);
-            await SendHook(hook.url, discordEmbed);
-        });
-        resolve();
+        await Promise.all(
+            hookList.map(async (hook) => {
+                console.log("Send to discord hook -> " + hook.discord.url);
+                return await SendHook(hook.discord.url, discordEmbed).catch((err) => undefined);
+            })
+        );
+        return resolve();
 
     });
 }

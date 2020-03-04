@@ -27,8 +27,8 @@ provider:
   region: ${opt:region, env:AWS_REGION, 'ap-southeast-1'}
   environment:
     REGION: ${self:provider.region}
-    DYNAMODB_TABLE: dereapi-version-dynamodb
-    HOOK_TABLE: dereapi-hook-dynamodb
+    DYNAMODB_TABLE: dereapi-version-info-dynamodb
+    HOOK_TABLE: dereapi-version-hook-dynamodb
     GPLAY_ID: 'jp.co.bandainamcoent.BNEI0242'
     ASTORE_ID: '1016318735'
   iamRoleStatements:
@@ -59,15 +59,17 @@ functions:
     handler: src/appVersion.handler
     name: ${self:provider.stage}-${self:service}-lambda
     memorySize: 128
+    timeout: 20
     events:
       - http:
           path: appver
           method: get
           cors: true
   updatever:
-      handler: src/updateVersion.handler
+      handler: src/updateAppVersion.handler
       name: ${self:provider.stage}-${self:service}-update-lambda
       memorySize: 128
+      timeout: 60
       events:
         - schedule: 
             rate: rate(1 hour)

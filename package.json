@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "version-dereapi-serice",
+  "name": "version-dereapi-service",
   "description": "DereAPI AppVersion Service",
   "version": "1.0.0",
   "license": "(MIT OR Apache-2.0)",

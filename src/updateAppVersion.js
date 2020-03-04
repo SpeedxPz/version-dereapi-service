@@ -3,9 +3,11 @@ import VersionModel from './model/Version';
 import HookModel from './model/Hook';
 import PlayStore from './updater/playStore';
 import AppStore from './updater/appStore';
-import DiscordHook from './webhook/discord';
+import DiscordHook from './webhook/discord/appVersion';
 
-
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
 
 export const handler = async event => {
@@ -20,6 +22,7 @@ export const handler = async event => {
         const vars = missing.join(', ');
         return createResponse(500 ,{message: `Missing required environment variables: ${vars}`});
     }
+
     VersionModel(dynamoTable);
     const Versions = await VersionModel.GetAll();
 
@@ -78,8 +81,9 @@ export const handler = async event => {
         console.log("Error while query apple store: \n" + err);
     });
 
+    const discordHookList = webhooksList.filter(item => item.service == "discord");
+    await DiscordHook(discordHookList, hookContent);
 
-    await DiscordHook(webhooksList, hookContent);
     console.log("Updater completed the task");
     return createResponse(200 ,{message: "It's ok so far"});
 };
