@@ -28,6 +28,8 @@ const SendHook = async(url, payload) => {
             return reject(err);
         });
 
+        console.log("Status Code : " + statusCode);
+
         resolve();
 
     });
@@ -42,9 +44,9 @@ const DiscordHook = async(hookList, payload) => {
         
         const discordEmbed = PrepareEmbeded(payload);
 
-        hookList.forEach(hook => {
+        hookList.forEach(async (hook) => {
             console.log("Send to hook -> " + hook.url);
-            SendHook(hook.url, discordEmbed);
+            await SendHook(hook.url, discordEmbed);
         });
         resolve();
 
