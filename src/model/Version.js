@@ -1,8 +1,16 @@
 'use strict'
-import dynamoose from 'dynamoose';
+const dynamoose = require('dynamoose');
 
-const GetVersionModel = (tableName) => {
-    const Version = dynamoose.model(
+
+let workingTable = "";
+
+const Model = (tableName) => {
+    workingTable = tableName;
+    return true;
+}
+
+const GetModel = (tableName) => {
+    const model = dynamoose.model(
         tableName, 
         {
             id: String, 
@@ -16,8 +24,32 @@ const GetVersionModel = (tableName) => {
                 author: String,
             }
         });
-
-    return Version;
+    
+    return model;
 }
 
-export default GetVersionModel;
+const GetAll = () => {
+    return new Promise((resolve, reject) => {
+        const model = GetModel(workingTable);
+        model.scan().exec((err, data) => {
+            if(err) return reject(err);
+            resolve(data);
+        });
+    });
+}
+
+const Update = (key, payload) => {
+      return new Promise((resolve, reject) => {
+        const model = GetModel(workingTable);
+        model.update({id: key}, payload, function (err) {
+            if (err) {
+              return reject(err);
+            }
+            return resolve();
+          });
+    });
+}
+
+module.exports = Model;
+Model.GetAll = GetAll;
+Model.Update = Update;

@@ -10,8 +10,8 @@ export const handler = async event => {
         const vars = missing.join(', ');
         return createResponse(500 ,{message: `Missing required environment variables: ${vars}`});
     }
-
-    const Versions = await GetAppVersions(dynamoTable);
+    VersionModel(dynamoTable);
+    const Versions = await VersionModel.GetAll();
     
     return createResponse(200 ,{ versions: Versions});
 };

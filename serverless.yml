@@ -13,8 +13,8 @@ custom:
   serverless-offline:
     port: 4000
   domains:
-    prod: apis.deresute.app
-    dev: dev.deresute.app
+    prod: ${env:DEREAPI_PROD_URL}
+    dev: ${env:DEREAPI_DEV_URL}
   customDomain:
     domainName: ${self:custom.domains.${self:provider.stage}}
     basePath: ''

@@ -33,44 +33,60 @@ const SendHook = async(url, payload) => {
     });
 }
 
-const RunHook = async (appInfo) => {
+const DiscordHook = async(hookList, payload) => {
     return new Promise(async (resolve, reject) => {
-        
-        let fields = [];
-
-        fields.push({
-            name: appInfo.platform,
-            value: appInfo.version,
-            inline: true
-        });
-        
-        const payload = {
-            embeds: [
-                {
-                    title: appInfo.name,
-                    description: appInfo.author,
-                    color: 9895731,
-                    thumbnail: {
-                        url: appInfo.image
-                    },
-                    footer: {
-                        text: "Last update at " + formattedDateTime(Math.floor(new Date() / 1000))
-                    },
-                    fields: fields,
-                }
-            ]
+        if(payload.length <= 0){
+            return resolve();
         }
 
-        appInfo.hooks.forEach(hook => {
-            console.log("Send to hook -> " + hook.url);
-            SendHook(hook.url, payload);
-        });
         
+        const discordEmbed = PrepareEmbeded(payload);
+
+        hookList.forEach(hook => {
+            console.log("Send to hook -> " + hook.url);
+            SendHook(hook.url, discordEmbed);
+        });
         resolve();
 
-    })
-};
+    });
+}
+
+const PrepareEmbeded = (payload) => {
+    const appName = payload[0].name;
+    const appIcon = payload[0].image;
+    const appAuthor = payload[0].author;
+    const appTime = formattedDateTime(Math.floor(new Date() / 1000));
+    let fields = [];
+    
+    payload.forEach(payloadItem => {
+        fields.push({
+            name: "**" + payloadItem.platform + "**",
+            value: payloadItem.version,
+            inline: true
+        });
+    });
+
+    return {
+        content: "**Deresute release new app version**",
+        embeds: [
+            {
+                title: appName,
+                description: appAuthor,
+                color: 9895731,
+                thumbnail: {
+                    url: appIcon
+                },
+                footer: {
+                    text: "Last update at " + appTime
+                },
+                fields: fields,
+            }
+        ]
+    }
+
+}
 
 
 
-export default RunHook;
+
+export default DiscordHook;

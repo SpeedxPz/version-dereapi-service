@@ -1,16 +1,35 @@
 'use strict'
-import dynamoose from 'dynamoose';
+const dynamoose = require('dynamoose');
 
-const GetHookModel = (tableName) => {
-    const Hook = dynamoose.model(
+
+let workingTable = "";
+
+const Model = (tableName) => {
+    workingTable = tableName;
+    return true;
+}
+
+const GetModel = (tableName) => {
+    const model = dynamoose.model(
         tableName, 
         {
             id: String, 
             function: String,
             url: String,
         });
-
-    return Hook;
+    
+    return model;
 }
 
-export default GetHookModel;
+const GetAll = () => {
+    return new Promise((resolve, reject) => {
+        const model = GetModel(workingTable);
+        model.scan().exec((err, data) => {
+            if(err) return reject(err);
+            resolve(data);
+        });
+    });
+}
+
+module.exports = Model;
+Model.GetAll = GetAll;
