@@ -4,10 +4,10 @@ const request = util.promisify(require("request"));
 
 
 const formattedDateTime = (timestamp) => {
-    var date = new Date((timestamp * 1000) );
+    var date = new Date(timestamp * 1000);
     var year = date.getFullYear();
-    var month = "0" + date.getMonth();
-    var day = "0" + date.getDay();
+    var month = "0" + (date.getMonth()+1);
+    var day = "0" + date.getDate();
     var hours = "0" + date.getHours();
     var minutes = "0" + date.getMinutes();
     var seconds = "0" + date.getSeconds();
