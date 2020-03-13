@@ -77,7 +77,7 @@ const PrepareEmbeded = (payload) => {
                     url: appIcon
                 },
                 footer: {
-                    text: "Last update at " + appTime
+                    text: "Last update at " + appTime + " (UTC)"
                 },
                 fields: fields,
             }
