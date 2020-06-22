@@ -11,21 +11,22 @@ const getJsonFromHTML = (bodyData) => {
     return result;
 };
 
+
 const getVersionFromHTML = (bodyData) => {
-    let result = bodyData.match(/\{key: \'ds:8\'\, isError\:  false \, hash: '\d*\', data:function\(\)\{return \[.*/g);
+    let result = bodyData.match("<div[^>]*?>Current Version<\/div><span[^>]*?><div[^>]*?><span[^>]*?>(.*?)<\/span><\/div>");
     if(!result) {
         return null;
     }
-    result = result[0].match(/\[.*\]/g);
-    result = JSON.parse(result[0]);
+
     result = {
-        size : result[0],
+        size : 0,
         version: result[1],
-        minimum: result[2]
+        minimum: 0
     };
 
-    return result;
+	return result;
 };
+
 
 
 const Query = async (appId) => {
